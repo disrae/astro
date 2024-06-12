@@ -18,24 +18,24 @@ export type LinkItem = LinkItemBase;
 
 export type SitemapOptions =
 	| {
-			filter?(page: string): boolean;
-			customPages?: string[];
+		filter?(page: string): boolean;
+		customPages?: string[];
 
-			i18n?: {
-				defaultLocale: string;
-				locales: Record<string, string>;
-			};
-			// number of entries per sitemap file
-			entryLimit?: number;
+		i18n?: {
+			defaultLocale: string;
+			locales: Record<string, string>;
+		};
+		// number of entries per sitemap file
+		entryLimit?: number;
 
-			// sitemap specific
-			changefreq?: ChangeFreq;
-			lastmod?: Date;
-			priority?: number;
+		// sitemap specific
+		changefreq?: ChangeFreq;
+		lastmod?: Date;
+		priority?: number;
 
-			// called for each sitemap item just before to save them on disk, sync or async
-			serialize?(item: SitemapItem): SitemapItem | Promise<SitemapItem | undefined> | undefined;
-	  }
+		// called for each sitemap item just before to save them on disk, sync or async
+		serialize?(item: SitemapItem): SitemapItem | Promise<SitemapItem | undefined> | undefined;
+	}
 	| undefined;
 
 function formatConfigErrorMessage(err: ZodError) {
@@ -125,6 +125,10 @@ const createPlugin = (options?: SitemapOptions): AstroIntegration => {
 							else fullPath += r.generate(r.pathname);
 
 							let newUrl = new URL(fullPath, finalSiteUrl).href;
+
+							// Escape the `en-us` locale
+							newUrl = newUrl.includes('en-us') ? newUrl.replace('gooseinsurance', 'smartbunny') : newUrl
+							console.log({ newUrl });
 
 							if (config.trailingSlash === 'never') {
 								urls.push(newUrl);
